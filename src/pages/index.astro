@@ -1,4 +1,10 @@
 ---
+import AboutCard from "@/components/cards/AboutCard";
+import EducationCard from "@/components/cards/EducationCard";
+import ExperienceCard from "@/components/cards/ExperienceCard";
+import ProjectsCard from "@/components/cards/ProjectsCard";
+import SkillsCard from "@/components/cards/SkillsCard";
+import ContactCard from "@/components/cards/ContactCard";
 import Layout from "../layouts/Layout.astro";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
@@ -6,5 +12,19 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <h1>hello</h1>
+  <div
+    class="flex min-h-screen flex-col bg-[#0a0a0b] p-4 font-sans text-slate-300 md:h-screen md:overflow-hidden md:p-6"
+  >
+    <main
+      class="mx-auto grid h-full w-full max-w-[1400px] grid-cols-1 gap-4 md:grid-cols-4 md:grid-rows-3"
+    >
+      <AboutCard client:load className="md:col-span-2 md:row-span-2" />
+      <ExperienceCard client:load className="md:col-span-2 md:row-span-1" />
+      <SkillsCard client:load className="md:col-span-2 md:row-span-1" />
+
+      <EducationCard client:load className="md:col-span-1 md:row-span-1" />
+      <ProjectsCard client:load className="md:col-span-2 md:row-span-1" />
+      <ContactCard client:load className="md:col-span-1 md:row-span-1" />
+    </main>
+  </div>
 </Layout>
