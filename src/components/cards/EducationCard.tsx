@@ -1,20 +1,32 @@
-import { Card } from "./Card";
 import { GraduationCap } from "lucide-react";
+import { Card } from "./Card";
+import type { Dictionary } from "@/i18n";
 
-export default function EducationCard({ className }: { className?: string }) {
+interface EducationCardProps {
+  className?: string;
+  content: Dictionary["education"];
+}
+
+export default function EducationCard({
+  className,
+  content: _content,
+}: EducationCardProps) {
   return (
-    <Card className={className} delay={0.4}>
-      <h3 className="mb-4 text-sm font-semibold text-white">Education</h3>
-      <div className="space-y-1">
-        <p className="text-sm leading-tight font-medium text-white">
-          MSc in Computer Science
+    <Card
+      className={className}
+      delay={0.4}
+      title={_content.title}
+      icon={<GraduationCap size={18} />}
+      enterFrom="left"
+    >
+      <div className="space-y-2">
+        <p className="text-lg leading-tight font-semibold text-white">
+          Uniwersytet Rzeszowski
         </p>
-        <p className="text-xs text-slate-500">
-          Warsaw University of Technology
+        <p className="text-base leading-tight text-slate-300">
+          Informatyka i Ekonometria (Inż.)
         </p>
-        <p className="mt-2 text-[10px] text-slate-600">
-          Graduated 2020 • Honors
-        </p>
+        <p className="text-sm text-slate-400">2019 - 2023</p>
       </div>
     </Card>
   );

@@ -1,59 +1,96 @@
+import { CircleHelp, Layers3 } from "lucide-react";
 import { Card } from "./Card";
-import { Code2 } from "lucide-react";
+import type { Dictionary, SkillGroup } from "@/i18n";
 
-const allSkills = [
-  { name: "JavaScript", color: "blue" },
-  { name: "TypeScript", color: "blue" },
-  { name: "PHP 8.3", color: "emerald" },
-  { name: "Laravel", color: "red" },
-  { name: "React", color: "cyan" },
-  { name: "SQL", color: "indigo" },
-  { name: "AWS", color: "orange" },
-  { name: "Docker", color: "slate" },
-  { name: "Node.js", color: "emerald" },
-  { name: "Next.js", color: "slate" },
-];
-
-const colorClasses: Record<string, string> = {
-  emerald: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  red: "bg-red-500/10 text-red-400 border-red-500/20",
-  cyan: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-  indigo: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-  orange: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  slate: "bg-slate-500/10 text-slate-400 border-slate-500/20",
+const skillGroupClasses: Record<SkillGroup, string> = {
+  practical:
+    "border-emerald-400/30 bg-emerald-400/10 text-emerald-100 shadow-[inset_0_1px_0_rgba(52,211,153,0.08)]",
+  basic:
+    "border-sky-400/30 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(56,189,248,0.08)]",
+  learning:
+    "border-amber-400/30 bg-amber-400/10 text-amber-100 shadow-[inset_0_1px_0_rgba(251,191,36,0.08)]",
 };
 
-export default function SkillsCard({ className }: { className?: string }) {
-  return (
-    <Card className={className} delay={0.3}>
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="flex items-center gap-2 font-semibold text-white">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-          Technical Stack
-        </h3>
-      </div>
+const skillGroupOrder: SkillGroup[] = ["practical", "basic", "learning"];
 
-      <div className="no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <div className="mt-2 flex flex-wrap gap-2">
-          {allSkills.map((skill) => (
-            <span
-              key={skill.name}
-              className={`px-3 py-1 ${colorClasses[skill.color]} rounded-md border font-mono text-xs`}
+interface SkillsCardProps {
+  className?: string;
+  content: Dictionary["skills"];
+}
+
+export default function SkillsCard({ className, content }: SkillsCardProps) {
+  const groupedSkills = skillGroupOrder.map((group) => ({
+    key: group,
+    items: content.items.filter((skill) => skill.level === group),
+  }));
+
+  return (
+    <Card
+      className={`${className ?? ""} overflow-visible`}
+      delay={0.3}
+      title={
+        <div className="flex items-center gap-2">
+          <span>{content.title}</span>
+          <div className="group relative flex">
+            <button
+              type="button"
+              aria-label={content.tooltipLabel}
+              className="text-slate-400 transition-colors hover:text-slate-100 focus:text-slate-100 focus:outline-none"
             >
-              {skill.name}
-            </span>
-          ))}
+              <CircleHelp size={14} />
+            </button>
+
+            <div className="bg-background-card/95 pointer-events-none absolute top-full right-0 z-20 mt-3 w-72 rounded-2xl border border-white/10 p-4 text-left opacity-0 shadow-2xl backdrop-blur-xl transition-all duration-200 group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 md:right-auto md:left-0">
+              <p className="mb-3 text-xs font-semibold tracking-wide text-slate-100 uppercase">
+                {content.tooltipTitle}
+              </p>
+
+              <div className="space-y-2">
+                {skillGroupOrder.map((group) => (
+                  <div key={group} className="flex items-start gap-2">
+                    <span
+                      className={`mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full ${
+                        group === "practical"
+                          ? "bg-emerald-300"
+                          : group === "basic"
+                            ? "bg-sky-300"
+                            : "bg-amber-300"
+                      }`}
+                    />
+                    <div>
+                      <p className="text-xs font-medium text-slate-100">
+                        {content.groups[group].label}
+                      </p>
+                      <p className="text-[11px] leading-relaxed text-slate-400">
+                        {content.groups[group].description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+      }
+      icon={<Layers3 size={18} />}
+      contentClassName="no-scrollbar overflow-y-auto"
+      enterFrom="right"
+    >
+      <div className="mt-1 flex min-h-0 flex-1 flex-col gap-3">
+        {groupedSkills.map((group) => (
+          <section key={group.key}>
+            <div className="flex flex-wrap gap-1.5">
+              {group.items.map((skill) => (
+                <span
+                  key={skill.name}
+                  className={`rounded-md border px-2.5 py-1 text-[11px] font-bold tracking-wide ${skillGroupClasses[group.key]}`}
+                >
+                  {skill.name}
+                </span>
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </Card>
   );

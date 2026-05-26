@@ -1,30 +1,58 @@
 ---
 import AboutCard from "@/components/cards/AboutCard";
+import ContactCard from "@/components/cards/ContactCard";
 import EducationCard from "@/components/cards/EducationCard";
 import ExperienceCard from "@/components/cards/ExperienceCard";
 import ProjectsCard from "@/components/cards/ProjectsCard";
 import SkillsCard from "@/components/cards/SkillsCard";
-import ContactCard from "@/components/cards/ContactCard";
+import { getDictionary, getLangFromHeader } from "@/i18n";
 import Layout from "../layouts/Layout.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const lang = getLangFromHeader(Astro.request.headers.get("accept-language"));
+const dictionary = getDictionary(lang);
 ---
 
-<Layout>
+<Layout
+  lang={lang}
+  title={dictionary.meta.title}
+  description={dictionary.meta.description}
+>
   <div
-    class="flex min-h-screen flex-col bg-[#0a0a0b] p-4 font-sans text-slate-300 md:h-screen md:overflow-hidden md:p-6"
+    class="bg-background flex min-h-screen flex-col px-4 py-5 font-sans text-slate-300 lg:h-screen lg:overflow-hidden lg:px-6 lg:py-6"
   >
     <main
-      class="mx-auto grid h-full w-full max-w-[1400px] grid-cols-1 gap-4 md:grid-cols-4 md:grid-rows-3"
+      class="mx-auto grid h-full w-full max-w-[1400px] grid-cols-1 gap-4 lg:grid-cols-4 lg:grid-rows-[1.05fr_0.95fr_1fr]"
     >
-      <AboutCard client:load className="md:col-span-2 md:row-span-2" />
-      <ExperienceCard client:load className="md:col-span-2 md:row-span-1" />
-      <SkillsCard client:load className="md:col-span-2 md:row-span-1" />
-
-      <EducationCard client:load className="md:col-span-1 md:row-span-1" />
-      <ProjectsCard client:load className="md:col-span-2 md:row-span-1" />
-      <ContactCard client:load className="md:col-span-1 md:row-span-1" />
+      <AboutCard
+        client:load
+        className="lg:col-span-2 lg:row-span-2"
+        content={dictionary.about}
+      />
+      <ExperienceCard
+        client:load
+        className="pb-4 lg:col-span-2 lg:row-span-1"
+        content={dictionary.experience}
+      />
+      <SkillsCard
+        client:load
+        className="lg:col-span-2 lg:row-span-1"
+        content={dictionary.skills}
+      />
+      <EducationCard
+        client:load
+        className="lg:col-span-1 lg:row-span-1"
+        content={dictionary.education}
+      />
+      <ProjectsCard
+        client:load
+        className="lg:col-span-2 lg:row-span-1"
+        content={dictionary.projects}
+      />
+      <ContactCard
+        client:load
+        className="lg:col-span-1 lg:row-span-1"
+        content={dictionary.contact}
+      />
     </main>
   </div>
 </Layout>
