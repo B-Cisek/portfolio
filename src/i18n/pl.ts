@@ -1,4 +1,5 @@
 import type { Dictionary } from "./types";
+import { sharedSkillItems } from "./skills";
 
 export const pl: Dictionary = {
   meta: {
@@ -57,28 +58,7 @@ export const pl: Dictionary = {
           "Jestem w trakcie rozwijania tej technologii i budowania większej swobody.",
       },
     },
-    items: [
-      { name: "PHP", level: "practical" },
-      { name: "Symfony", level: "practical" },
-      { name: "Laravel", level: "practical" },
-      { name: "HTML", level: "practical" },
-      { name: "CSS", level: "practical" },
-      { name: "SQL", level: "practical" },
-      { name: "JavaScript", level: "practical" },
-      { name: "Vue 3", level: "practical" },
-      { name: "Nuxt 4", level: "practical" },
-      { name: "React", level: "basic" },
-      { name: "Docker", level: "practical" },
-      { name: "Node.js", level: "basic" },
-      { name: "Git", level: "practical" },
-      { name: "REST API", level: "practical" },
-      { name: "CQRS", level: "basic" },
-      { name: "Linux", level: "basic" },
-      { name: "TypeScript", level: "basic" },
-      { name: "Go", level: "learning" },
-      { name: "RabbitMQ", level: "basic" },
-      { name: "Redis", level: "basic" },
-    ],
+    items: sharedSkillItems,
   },
   education: {
     title: "Edukacja",
@@ -88,26 +68,33 @@ export const pl: Dictionary = {
   },
   projects: {
     projectLabel: "Projekt #{number}",
-    selectedCaseStudy: "Wybrane case study",
     ariaLabel: "Pokaż projekt {number}",
+    githubLabel: "GitHub",
+    demoLabel: "Demo",
     items: [
       {
-        title: "Platforma e-commerce",
+        title: "Cinema Booking App",
         description:
-          "Rozbudowane rozwiązanie e-commerce zbudowane w Next.js, Stripe i własnym CMS-em. Zawiera ultraszybkie wyszukiwanie oraz stany magazynowe w czasie rzeczywistym.",
-        tags: ["Next.js", "Stripe", "Tailwind"],
+          "Aplikacja do rezerwacji miejsc w kinie, umożliwiająca przeglądanie repertuaru, wybór seansu i zakup biletów przez intuicyjny interfejs.",
+        tags: ["Laravel", "React", "Inertia.js", "Redis", "PostgreSQL"],
+        githubLink: "https://github.com/B-Cisek/cinema-booking-app",
+        demoLink: "https://cinema.bartlomiejcisek.pl",
       },
       {
-        title: "Aplikacja do zarządzania zadaniami",
+        title: "Gym Management SaaS (Backend)",
         description:
-          "Narzędzie do współpracy projektowej z aktualizacjami w czasie rzeczywistym przez WebSockety, tablicami kanban i szczegółową analityką.",
-        tags: ["React", "Node.js", "Socket.io"],
+          "Gym Management SaaS to multi-tenant system dla sieci siłowni, pozwalający na zarządzanie klientami, karnetami, grafikiem zajęć oraz check-inami.",
+        tags: ["Symfony", "PostgreSQL", "Redis"],
+        githubLink: "https://github.com/B-Cisek/gym-backend",
+        demoLink: null,
       },
       {
-        title: "Generator obrazów AI",
+        title: "Gym Management SaaS (Frontend)",
         description:
-          "Interfejs webowy do generowania obrazów przy użyciu modeli AI. Integruje API HuggingFace i pozwala zapisywać oraz udostępniać prompty.",
-        tags: ["Python", "React", "AI"],
+          "Gym Management SaaS to multi-tenant system dla sieci siłowni, pozwalający na zarządzanie klientami, karnetami, grafikiem zajęć oraz check-inami.",
+        tags: ["Nuxt", "TypeScript", "Pinia", "Tailwind CSS"],
+        githubLink: "https://github.com/B-Cisek/gym-frontend",
+        demoLink: null,
       },
     ],
   },

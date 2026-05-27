@@ -20,5 +20,6 @@ This file provides guidance to AI Agents when working with code in this reposito
 ## Architecture Overview
 
 ### Technology Stack
-- **Framework**: Astro 6
-- **Styling**: Tailwind CSS 4
+- Astro 6
+- Tailwind CSS 4
+- React 19

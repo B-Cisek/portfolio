@@ -1,0 +1,24 @@
+import type { SkillItem } from "./types";
+
+export const sharedSkillItems: SkillItem[] = [
+  { name: "PHP", level: "practical" },
+  { name: "Symfony", level: "practical" },
+  { name: "Laravel", level: "practical" },
+  { name: "HTML", level: "practical" },
+  { name: "CSS", level: "practical" },
+  { name: "SQL", level: "practical" },
+  { name: "JavaScript", level: "practical" },
+  { name: "Vue 3", level: "practical" },
+  { name: "Nuxt 4", level: "practical" },
+  { name: "React", level: "basic" },
+  { name: "Docker", level: "practical" },
+  { name: "Node.js", level: "basic" },
+  { name: "Git", level: "practical" },
+  { name: "REST API", level: "practical" },
+  { name: "CQRS", level: "basic" },
+  { name: "Linux", level: "basic" },
+  { name: "TypeScript", level: "basic" },
+  { name: "Go", level: "learning" },
+  { name: "RabbitMQ", level: "basic" },
+  { name: "Redis", level: "basic" },
+];

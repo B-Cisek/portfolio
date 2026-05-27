@@ -22,6 +22,8 @@ export interface ProjectItem {
   title: string;
   description: string;
   tags: string[];
+  githubLink: string;
+  demoLink: string | null;
 }
 
 export interface Dictionary {
@@ -57,8 +59,9 @@ export interface Dictionary {
   };
   projects: {
     projectLabel: string;
-    selectedCaseStudy: string;
     ariaLabel: string;
+    githubLabel: string;
+    demoLabel: string;
     items: ProjectItem[];
   };
   contact: {

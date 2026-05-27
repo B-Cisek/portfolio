@@ -20,7 +20,7 @@ export default function ContactCard({ className, content }: ContactCardProps) {
       >
         <button
           type="button"
-          className="group relative flex h-full w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl p-6 text-center text-[#0a0a0b] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-accent-strong"
+          className="group hover:bg-accent-strong relative flex h-full w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl p-6 text-center text-[#0a0a0b] transition-transform duration-200 hover:-translate-y-0.5"
           onClick={() => setIsOpen(true)}
         >
           <svg

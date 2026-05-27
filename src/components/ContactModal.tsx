@@ -98,7 +98,9 @@ export function ContactModal({
                 <div className="bg-accent-soft text-accent mb-4 flex h-12 w-12 items-center justify-center rounded-full">
                   <Send className="ml-1 h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-medium text-white">{content.successTitle}</h3>
+                <h3 className="text-lg font-medium text-white">
+                  {content.successTitle}
+                </h3>
                 <p className="mt-2 text-sm text-slate-400">
                   {content.successDescription}
                 </p>

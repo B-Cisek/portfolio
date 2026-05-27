@@ -43,9 +43,7 @@ export function Card({
             {title && (
               <div className="flex items-center gap-2">
                 {icon && <span className="text-accent shrink-0">{icon}</span>}
-                <h3 className="text-sm font-semibold text-white">
-                  {title}
-                </h3>
+                <h3 className="text-sm font-semibold text-white">{title}</h3>
               </div>
             )}
           </div>
