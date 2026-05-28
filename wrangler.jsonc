@@ -1,4 +1,5 @@
 {
+	"$schema": "./node_modules/wrangler/config-schema.json",
 	"compatibility_date": "2026-05-26",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "portfolio",
@@ -7,12 +8,14 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
-	"send_email": [
-		{
-			"name": "EMAIL",
-			"remote": true
-		}
-	],
+	"secrets": {
+		"required": [
+			"TURNSTILE_SECRET_KEY",
+			"RESEND_API_KEY",
+			"RESEND_FROM_EMAIL",
+			"CONTACT_EMAIL"
+		]
+	},
 	"observability": {
 		"enabled": true
 	}
