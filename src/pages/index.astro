@@ -12,11 +12,7 @@ const lang = getLangFromHeader(Astro.request.headers.get("accept-language"));
 const dictionary = getDictionary(lang);
 ---
 
-<Layout
-  lang={lang}
-  title={dictionary.meta.title}
-  description={dictionary.meta.description}
->
+<Layout lang={lang}>
   <div
     class="bg-background flex min-h-screen flex-col px-4 py-5 font-sans text-slate-300 lg:h-screen lg:overflow-hidden lg:px-6 lg:py-6"
   >

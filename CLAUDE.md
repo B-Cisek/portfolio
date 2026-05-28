@@ -23,3 +23,6 @@ This file provides guidance to AI Agents when working with code in this reposito
 - Astro 6
 - Tailwind CSS 4
 - React 19
+- Deployment runs on Cloudflare Workers with SSR
+- Email sending uses Resend
+- Captcha uses Cloudflare Turnstile

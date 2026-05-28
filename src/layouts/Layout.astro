@@ -1,18 +1,13 @@
 ---
 import "../styles/global.css";
+import SEO from "@/components/SEO.astro";
 import type { Lang } from "@/i18n";
 
 interface Props {
   lang: Lang;
-  title?: string;
-  description?: string;
 }
 
-const {
-  lang,
-  title = "Bartlomiej Portfolio",
-  description = "Portfolio software developera budującego nowoczesne backendy i dopracowane interfejsy.",
-} = Astro.props;
+const { lang } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,9 +16,8 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
+    <SEO />
 
     <link rel="preconnect" href="https://challenges.cloudflare.com" />
 
@@ -31,7 +25,6 @@ const {
       src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       async
       defer></script>
-    <title>{title}</title>
   </head>
   <body>
     <slot />
