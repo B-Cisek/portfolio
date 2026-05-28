@@ -64,7 +64,8 @@ export const en: Dictionary = {
     title: "Education",
     degree: "Bachelor's degree",
     university: "University of Rzeszów",
-    summary: "Computer Science and Econometrics",
+    major: "Computer Science and Econometrics",
+    period: "2019 - 2023",
   },
 
   projects: {

@@ -64,7 +64,8 @@ export const pl: Dictionary = {
     title: "Edukacja",
     degree: "Inż",
     university: "Uniwersytet Rzeszowski",
-    summary: "Informatyka i Ekonometria",
+    major: "Informatyka i Ekonometria",
+    period: "2019 - 2023",
   },
   projects: {
     projectLabel: "Projekt #{number}",

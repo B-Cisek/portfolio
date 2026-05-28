@@ -9,24 +9,24 @@ interface EducationCardProps {
 
 export default function EducationCard({
   className,
-  content: _content,
+  content,
 }: EducationCardProps) {
   return (
     <Card
       className={className}
       delay={0.4}
-      title={_content.title}
+      title={content.title}
       icon={<GraduationCap size={18} />}
       enterFrom="left"
     >
       <div className="space-y-2">
         <p className="text-lg leading-tight font-semibold text-white">
-          Uniwersytet Rzeszowski
+          {content.university}
         </p>
         <p className="text-base leading-tight text-slate-300">
-          Informatyka i Ekonometria (Inż.)
+          {content.major} ({content.degree})
         </p>
-        <p className="text-sm text-slate-400">2019 - 2023</p>
+        <p className="text-sm text-slate-400">{content.period}</p>
       </div>
     </Card>
   );

@@ -2,21 +2,16 @@ import { motion, AnimatePresence } from "motion/react";
 import { Send } from "lucide-react";
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import type { Dictionary } from "@/i18n";
+import { PUBLIC_TURNSTILE_SITE_KEY } from "astro:env/client";
 
 const inputClassName =
   "w-full rounded-2xl border border-white/10 bg-white/4 px-4 py-3.5 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-accent focus:bg-white/6";
-const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
-const invalidInputClassName =
-  "border-red-500/60 bg-red-500/8 focus:border-red-400";
 
 type ContactFormValues = {
   name: string;
   email: string;
   message: string;
 };
-
-type ContactField = keyof ContactFormValues;
-type FieldErrors = Partial<Record<ContactField, string>>;
 
 declare global {
   interface Window {
@@ -51,7 +46,6 @@ export function ContactModal({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetIdRef = useRef<string | null>(null);
 
@@ -72,7 +66,6 @@ export function ContactModal({
     setIsSubmitting(false);
     setSuccess(false);
     setErrorMessage(null);
-    setFieldErrors({});
     setTurnstileToken(null);
 
     const previousOverflow = document.body.style.overflow;
@@ -84,7 +77,7 @@ export function ContactModal({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen || !turnstileSiteKey || !turnstileContainerRef.current) return;
+    if (!isOpen || !turnstileContainerRef.current) return;
 
     let isCancelled = false;
     let retryTimeout: number | null = null;
@@ -100,7 +93,7 @@ export function ContactModal({
       turnstileWidgetIdRef.current = window.turnstile.render(
         turnstileContainerRef.current,
         {
-          sitekey: turnstileSiteKey,
+          sitekey: PUBLIC_TURNSTILE_SITE_KEY,
           theme: "dark",
           size: "flexible",
           callback: (token) => {
@@ -143,56 +136,6 @@ export function ContactModal({
     }
   };
 
-  const validateField = (field: ContactField, value: string) => {
-    if (field === "name") {
-      if (!value) return content.nameRequiredError;
-      if (value.length < 2 || value.length > 50)
-        return content.nameInvalidError;
-      return null;
-    }
-
-    if (field === "email") {
-      if (!value) return content.emailRequiredError;
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return content.emailInvalidError;
-      }
-      return null;
-    }
-
-    if (!value) return content.messageRequiredError;
-    if (value.length < 10 || value.length > 5000) {
-      return content.messageInvalidError;
-    }
-    return null;
-  };
-
-  const setFieldError = (field: ContactField, value: string) => {
-    const error = validateField(field, value.trim());
-
-    setFieldErrors((currentErrors) => {
-      if (!error && !currentErrors[field]) return currentErrors;
-
-      return {
-        ...currentErrors,
-        [field]: error ?? undefined,
-      };
-    });
-  };
-
-  const applyServerFieldErrors = (
-    errors: Partial<Record<ContactField | "turnstileToken", string>>,
-  ) => {
-    setFieldErrors({
-      name: errors.name,
-      email: errors.email,
-      message: errors.message,
-    });
-
-    if (errors.turnstileToken) {
-      setErrorMessage(content.turnstileError);
-    }
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -205,23 +148,6 @@ export function ContactModal({
       message: String(formData.get("message") ?? "").trim(),
       turnstileToken,
     };
-
-    const nextFieldErrors: FieldErrors = {
-      name: validateField("name", payload.name) ?? undefined,
-      email: validateField("email", payload.email) ?? undefined,
-      message: validateField("message", payload.message) ?? undefined,
-    };
-
-    setFieldErrors(nextFieldErrors);
-
-    if (
-      nextFieldErrors.name ||
-      nextFieldErrors.email ||
-      nextFieldErrors.message
-    ) {
-      setErrorMessage(content.validationError);
-      return;
-    }
 
     if (!payload.turnstileToken) {
       setErrorMessage(content.turnstileError);
@@ -238,24 +164,27 @@ export function ContactModal({
         },
         body: JSON.stringify(payload),
       });
+      const responseBody = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
 
       if (!response.ok) {
-        resetTurnstile();
-        const responseBody = (await response.json().catch(() => null)) as {
-          fieldErrors?: Partial<
-            Record<ContactField | "turnstileToken", string>
-          >;
-        } | null;
-
-        if (responseBody?.fieldErrors) {
-          applyServerFieldErrors(responseBody.fieldErrors);
+        if (responseBody?.message === "CAPTCHA_VERIFICATION_FAILED") {
+          resetTurnstile();
+          setErrorMessage(content.turnstileError);
+        } else if (responseBody?.message === "VALIDATION_FAILED") {
+          setErrorMessage(content.validationError);
+        } else {
+          resetTurnstile();
+          setErrorMessage(content.errorDescription);
         }
 
-        throw new Error("Request failed");
+        setIsSubmitting(false);
+        return;
       }
 
       form.reset();
-      setFieldErrors({});
+      resetTurnstile();
       setIsSubmitting(false);
       setSuccess(true);
       setTimeout(() => {
@@ -271,7 +200,7 @@ export function ContactModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6">
+        <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -288,7 +217,7 @@ export function ContactModal({
             aria-modal="true"
             aria-labelledby="contact-modal-title"
             aria-describedby="contact-modal-description"
-            className="relative my-auto w-full max-w-4xl overflow-hidden rounded-[28px] border border-white/10 bg-[#121214] shadow-2xl sm:rounded-[36px]"
+            className="relative mx-auto my-auto flex max-h-[calc(100vh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#121214] shadow-2xl sm:max-h-[calc(100vh-2rem)] sm:rounded-[36px] md:max-h-[calc(100vh-3rem)]"
           >
             <div className="pointer-events-none absolute inset-0">
               <div className="bg-accent/12 absolute top-0 right-0 h-72 w-72 rounded-full blur-3xl" />
@@ -306,7 +235,7 @@ export function ContactModal({
                   </h2>
                   <p
                     id="contact-modal-description"
-                    className="mt-2 max-w-xl text-sm leading-6 whitespace-pre-line text-slate-400"
+                    className="mt-2 text-base leading-6 whitespace-pre-line text-slate-400"
                   >
                     {content.modalDescription}
                   </p>
@@ -322,7 +251,7 @@ export function ContactModal({
               </div>
             </div>
 
-            <div className="relative max-h-[calc(100vh-2rem)] overflow-y-auto">
+            <div className="relative min-h-0 flex-1 overflow-y-auto">
               {success ? (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -342,6 +271,7 @@ export function ContactModal({
               ) : (
                 <form
                   onSubmit={handleSubmit}
+                  noValidate
                   className="space-y-5 px-5 py-5 sm:px-7 sm:py-7"
                 >
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -356,33 +286,10 @@ export function ContactModal({
                         id="name"
                         name="name"
                         type="text"
-                        required
-                        minLength={2}
-                        maxLength={100}
                         autoComplete="name"
-                        className={`${inputClassName} ${fieldErrors.name ? invalidInputClassName : ""}`}
+                        className={inputClassName}
                         placeholder={content.namePlaceholder}
-                        onBlur={(event) =>
-                          setFieldError("name", event.currentTarget.value)
-                        }
-                        onChange={(event) => {
-                          if (fieldErrors.name) {
-                            setFieldError("name", event.currentTarget.value);
-                          }
-                        }}
-                        aria-invalid={fieldErrors.name ? "true" : "false"}
-                        aria-describedby={
-                          fieldErrors.name ? "contact-name-error" : undefined
-                        }
                       />
-                      {fieldErrors.name ? (
-                        <p
-                          id="contact-name-error"
-                          className="text-sm text-red-300"
-                        >
-                          {fieldErrors.name}
-                        </p>
-                      ) : null}
                     </div>
 
                     <div className="space-y-2">
@@ -396,31 +303,10 @@ export function ContactModal({
                         id="email"
                         name="email"
                         type="email"
-                        required
                         autoComplete="email"
-                        className={`${inputClassName} ${fieldErrors.email ? invalidInputClassName : ""}`}
+                        className={inputClassName}
                         placeholder={content.emailPlaceholder}
-                        onBlur={(event) =>
-                          setFieldError("email", event.currentTarget.value)
-                        }
-                        onChange={(event) => {
-                          if (fieldErrors.email) {
-                            setFieldError("email", event.currentTarget.value);
-                          }
-                        }}
-                        aria-invalid={fieldErrors.email ? "true" : "false"}
-                        aria-describedby={
-                          fieldErrors.email ? "contact-email-error" : undefined
-                        }
                       />
-                      {fieldErrors.email ? (
-                        <p
-                          id="contact-email-error"
-                          className="text-sm text-red-300"
-                        >
-                          {fieldErrors.email}
-                        </p>
-                      ) : null}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -433,35 +319,10 @@ export function ContactModal({
                     <textarea
                       id="message"
                       name="message"
-                      required
                       rows={7}
-                      minLength={10}
-                      maxLength={5000}
-                      className={`${inputClassName} min-h-[180px] resize-none ${fieldErrors.message ? invalidInputClassName : ""}`}
+                      className={`${inputClassName} min-h-[180px] resize-none`}
                       placeholder={content.messagePlaceholder}
-                      onBlur={(event) =>
-                        setFieldError("message", event.currentTarget.value)
-                      }
-                      onChange={(event) => {
-                        if (fieldErrors.message) {
-                          setFieldError("message", event.currentTarget.value);
-                        }
-                      }}
-                      aria-invalid={fieldErrors.message ? "true" : "false"}
-                      aria-describedby={
-                        fieldErrors.message
-                          ? "contact-message-error"
-                          : undefined
-                      }
                     />
-                    {fieldErrors.message ? (
-                      <p
-                        id="contact-message-error"
-                        className="text-sm text-red-300"
-                      >
-                        {fieldErrors.message}
-                      </p>
-                    ) : null}
                   </div>
                   {errorMessage ? (
                     <div

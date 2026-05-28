@@ -34,6 +34,10 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      CONTACT_EMAIL: envField.string({
+        context: "server",
+        access: "secret",
+      }),
     },
   },
 });

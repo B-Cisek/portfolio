@@ -55,7 +55,8 @@ export interface Dictionary {
     title: string;
     degree: string;
     university: string;
-    summary: string;
+    major: string;
+    period: string;
   };
   projects: {
     projectLabel: string;
