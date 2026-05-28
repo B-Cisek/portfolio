@@ -1,5 +1,9 @@
 import { TURNSTILE_SECRET_KEY } from "astro:env/server";
 
+interface TurnstileVerificationResult {
+  success?: boolean;
+}
+
 export async function verifyTurnstile(
   token: string,
   remoteIp: string | null,
@@ -22,12 +26,16 @@ export async function verifyTurnstile(
       },
     );
 
-    const result = await response.json();
+    if (!response.ok) {
+      return { success: false };
+    }
 
-    console.log(result);
+    const result = (await response
+      .json()
+      .catch(() => null)) as TurnstileVerificationResult | null;
 
-    return { success: true };
-  } catch (error) {
+    return { success: result?.success === true };
+  } catch {
     return { success: false };
   }
 }

@@ -11,6 +11,16 @@ const json = (body: object, status = 200) =>
     },
   });
 
+const hasTrustedOrigin = (request: Request): boolean => {
+  const origin = request.headers.get("origin");
+
+  if (!origin) {
+    return false;
+  }
+
+  return origin === new URL(request.url).origin;
+};
+
 const contactSchema = z.object({
   name: z.string().trim().min(4).max(50),
   email: z.email(),
@@ -19,6 +29,15 @@ const contactSchema = z.object({
 });
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!hasTrustedOrigin(request)) {
+    return json(
+      {
+        message: "INVALID_ORIGIN",
+      },
+      403,
+    );
+  }
+
   const payload = await request.json().catch(() => null);
   const parsedPayload = contactSchema.safeParse(payload);
 

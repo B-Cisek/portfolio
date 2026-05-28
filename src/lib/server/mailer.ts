@@ -30,14 +30,22 @@ export const sendEmail = async (data: SendEmailData): Promise<boolean> => {
   return true;
 };
 
+const escapeHtml = (value: string): string =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
 const createHtml = (data: SendEmailData): string => `
   <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
     <h1 style="margin: 0 0 24px; font-size: 24px;">Nowa wiadomosc z formularza portfolio</h1>
-    <p style="margin: 0 0 12px;"><strong>Imie:</strong> ${data.name}</p>
-    <p style="margin: 0 0 12px;"><strong>Email:</strong> ${data.email}</p>
+    <p style="margin: 0 0 12px;"><strong>Imie:</strong> ${escapeHtml(data.name)}</p>
+    <p style="margin: 0 0 12px;"><strong>Email:</strong> ${escapeHtml(data.email)}</p>
     <p style="margin: 24px 0 8px;"><strong>Wiadomosc:</strong></p>
     <div style="white-space: pre-wrap; border-radius: 12px; background: #f3f4f6; padding: 16px;">
-      ${data.message}
+      ${escapeHtml(data.message)}
     </div>
   </div>
 `;
