@@ -21,4 +21,7 @@ export const sharedSkillItems: SkillItem[] = [
   { name: "Go", level: "learning" },
   { name: "RabbitMQ", level: "basic" },
   { name: "Redis", level: "basic" },
+  { name: "Python", level: "learning" },
+  { name: "Claude Code", level: "learning" },
+  { name: "Codex", level: "learning" },
 ];
