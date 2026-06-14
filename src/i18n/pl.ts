@@ -97,6 +97,22 @@ export const pl: Dictionary = {
         githubLink: "https://github.com/B-Cisek/gym-frontend",
         demoLink: null,
       },
+      {
+        title: "URL Shortener",
+        description:
+          "URL Shortener to prosta aplikacja do skracania adresów URL.",
+        tags: [
+          "Express.js",
+          "TypeScript",
+          "Better Auth",
+          "PostgreSQL",
+          "Drizzle ORM",
+          "Redis",
+          "Vue 3",
+        ],
+        githubLink: "https://github.com/B-Cisek/url-shortener",
+        demoLink: null,
+      },
     ],
   },
   contact: {
